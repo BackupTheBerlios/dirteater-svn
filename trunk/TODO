@@ -1,8 +1,10 @@
 A TODO list for the _NEARER_ future. This is no complete list. 
 Ordered by importance.
 
-- Make the configuration file location much more complex.
-- Make the "configuration progress" complete.
+- Add XML Validation against DTD
+- Make the configuration file location system independent
+- Make the "configuration progress" complete. (50% DONE)
+- More error handling
 - Implement plugin-mechanism
 
 $Id$

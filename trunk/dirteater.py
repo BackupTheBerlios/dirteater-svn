@@ -20,35 +20,48 @@ __headurl__ = "$HeadURL$"
 import os
 import sys
 import signal
+import types
 import string
 import threading
+import os.path
 import pprint
-
 import xml.dom.minidom
+
 from xml.dom.minidom import Node
 from xml.dom.minidom import Element
 
 def main():
 	# Some globals and variables
 	global config
-
+	global homedir
+	
 	config = {}
 
 	options = [
-		"--config",		"--configdump",
+		"--config",
+		"--configdump",
+		"--daemon",
 		"--debug",
-		"--verbose",	"--version"
+		"--verbose",
+		"--version"
 	]
 	shortoptions = {
 		"c":"--config",
 		"d":"--debug",
+		"D":"--daemon",
 		"v":"--verbose",
 		"V":"--version"
 	}
+	overwrite = [
+		"--daemon",
+		"--debug",
+		"--verbose"
+	]
+	
 
 	# Scan for commandline options. This is like the handling 
 	# of Gentoo's (http://www.gentoo.org) "emerge". 
-	# Thanks guys!
+	# Thanks vor this inspiration guys!
 	
 	tmpcmd = sys.argv[1:]
 	cmd = []
@@ -75,7 +88,12 @@ def main():
 			print "!!! Error: "+x+" is an invalid option."
 			sys.exit(1)
 
-	# "One option, one Output and die" (tm)
+	# Some error handling
+	if "--daemon" in opts and "--nodaemon" in opts: 
+		print "!!! Error: You can not use --daemon and --nodaemon at the same time"
+		sys.exit(1)
+	
+	# "One option, one output and die" (tm)
 	if "--help" in opts: 
 		print "I guess you need help. That's bad at the moment! ;)"
 		sys.exit()
@@ -89,20 +107,50 @@ def main():
 			print __revision__
 		sys.exit()
 	
-	# Read the static configuration and ensure that commandline options
-	# have a higher priority than config.xml options.
-	conffile = xml.dom.minidom.parse("config.xml")
+	# This is only for Linux ATM
+	homedir = os.getenv("HOME")
+
+	if "--config" in opts:
+		if opts[opts.index("--config")+1][0:2] == "--":
+			print "!!! Error: You specified --config but no file was appended!"
+			sys.exit(1)
+		config['config'] = opts[opts.index("--config")+1]
+	else:
+		if os.path.isfile(homedir+"/dirt.xml"):
+			config['config'] = homedir+"/dirt.xml"
+		elif os.path.isfile("/etc/dirt.xml"):
+			config['config'] = "/etc/dirt.xml"
+		else: 
+			print "!!! Error: No configuration file found!"
+			sys.exit(1)
+		
+	configuration = xml.dom.minidom.parse(config['config'])
+
+	# Validate XML
+	# TODO
 	
-	general_config = conffile.getElementsByTagName('general')
+	general_config = configuration.getElementsByTagName('general')
 	for node in general_config:
 		for general in node.childNodes:
 			if general.nodeType == Node.ELEMENT_NODE:
 				setname = general.nodeName
 			for set in general.childNodes:
-				config[setname] = set.data
+				# TODO: We really have to find a nice way to check for bool's. 
+				# This is ugly. 
+				if string.lower(set.data) == "true":
+					config[setname] = True
+				elif string.lower(set.data) == "false":
+					config[setname] = False
+				else:
+					config[setname] = set.data
+
+	for set in opts:
+		if set in overwrite:
+			config[set[2:]] = True
 	
 	if "--configdump" in opts:
 		pprint.pprint(config)
+		sys.exit()
 
 if __name__ == "__main__":
 	main()

@@ -7,6 +7,7 @@
 <config>
 	<general>
 		<debug>true</debug>
+		<verbose>true</verbose>
 		<daemon>true</daemon>
 	</general>
 	<module name="foo" type="input" enable="true">
