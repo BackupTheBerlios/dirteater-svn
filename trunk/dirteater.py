@@ -45,8 +45,8 @@ def main():
 	options = [
 		"--config",
 		"--configdump",
-		"--daemon",
 		"--debug",
+		"--daemon",
 		"--verbose",
 		"--version"
 	]
@@ -100,7 +100,15 @@ def main():
 	
 	# "One option, one output and die" (tm)
 	if "--help" in opts: 
-		print "I guess you need help. That's bad at the moment! ;)"
+		print "This is dirteater (http://dirteater.berlios.de). The information management system.\n"
+		print "These are the availibale command line options:\n"
+		print "--config <path>\t\t Specify configuration file manually"
+		print "--configdump \t\t Parse configuation file and print out all configuration variables"
+		print "--daemon \t\t Make dirteater daemonic"
+		print "--debug \t\t Degging output"
+		print "--verbose \t\t Make output verbose"
+		print "--version \t\t Print out version information and exit\n"
+		print "Please report bugs to <dirteater-dev@lists.berlios.de>\n"
 		sys.exit()
 	elif "--version" in opts:
 		# Some easy release-checkin'
@@ -181,8 +189,6 @@ def main():
 	if "--configdump" in opts:
 		pprint.pprint(config)
 		sys.exit()
-
-	
 
 if __name__ == "__main__":
 	main()
