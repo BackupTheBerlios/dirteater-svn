@@ -47,6 +47,8 @@ def main():
 		"--configdump",
 		"--debug",
 		"--daemon",
+		"--help",
+		"--module-help",
 		"--verbose",
 		"--version"
 	]
@@ -54,6 +56,8 @@ def main():
 		"c":"--config",
 		"d":"--debug",
 		"D":"--daemon",
+		"h":"--help",
+		"H":"--module-help",
 		"v":"--verbose",
 		"V":"--version"
 	}
@@ -80,23 +84,19 @@ def main():
 					else:
 						cmd.append(shortoptions[y])
 				else:
-					print "!!! Error: -"+y+" is an invalid option."
+					print "!!! Error: -"+y+" is an invalid shortoption."
 					sys.exit(1)
 		else:
 			cmd.append(x)
 	for x in cmd:
-		if len(x) >= 2 and x[0:2] != "--":
+		if len(x) >= 2 and x[0:2] == "--":
+			if x in options:
+				opts.append(x)
+			else:
+				print "!!! Error "+x+" is an invalid option."
+				sys.exit(1)
+		else:
 			opts.append(x)
-		elif len(x) >= 2 and x[0:2] == "--":
-			opts.append(x)
-		elif x not in options:
-			print "!!! Error: "+x+" is an invalid option."
-			sys.exit(1)
-
-	# Some error handling
-	if "--daemon" in opts and "--nodaemon" in opts: 
-		print "!!! Error: You can not use --daemon and --nodaemon at the same time"
-		sys.exit(1)
 	
 	# "One option, one output and die" (tm)
 	if "--help" in opts: 
@@ -106,6 +106,8 @@ def main():
 		print "--configdump \t\t Parse configuation file and print out all configuration variables"
 		print "--daemon \t\t Make dirteater daemonic"
 		print "--debug \t\t Degging output"
+		print "--help \t\t\t Display this help message"
+		print "--module-help <module> \t Display help for a module and exit. Modules are named for example: 'output:hello'"
 		print "--verbose \t\t Make output verbose"
 		print "--version \t\t Print out version information and exit\n"
 		print "Please report bugs to <dirteater-dev@lists.berlios.de>\n"
@@ -119,6 +121,31 @@ def main():
 			print "This is a development version. Expect bugs!"
 			print __revision__
 		sys.exit()
+	elif "--module-help" in opts:
+		if len(opts) < 2:
+			print "!!! Error: You want to use --module-help, but no module was appended!"
+			sys.exit(1)
+		elif opts[opts.index("--module-help")+1][0:2] == "--" or len(opts) <= 1:
+			print "!!! Error: You want to use --module-help, but no module was appended!"
+			sys.exit(1)
+		else:
+			moduleinfo = string.split(opts[opts.index("--module-help")+1], ":")
+			if len(moduleinfo) < 1:
+				print "!!! Error: You have to specify the module you want help for in this syntax 'output:hello'"
+				sys.exit(1)
+			else: 
+				if moduleinfo[0] != "output" and moduleinfo[0] != "input":
+					print moduleinfo[0]
+					print "!!! Error: You have specified a wrong module type. You only can use 'input' or 'output'"
+					sys.exit(1)
+				else: 
+					print "Help for "+moduleinfo[0]+" module '"+moduleinfo[1]+"':"
+					# We should do an import like this: 
+					#import modules.moduleinfo[0].moduleinfo[1]
+					# 
+					# probably this works with the module "imp"
+					print "\n\t this feature is not implemented yet \t\n"
+					sys.exit()
 	
 	# Get the users application data directory from environment variables and "~/"
 	# Try windows path first, as windows has a special application data directory
@@ -142,8 +169,11 @@ def main():
 		etcdir = ""
 
 	if "--config" in opts:
-		if opts[opts.index("--config")+1][0:2] == "--":
-			print "!!! Error: You specified --config but no file was appended!"
+		if len(opts) == 1:
+			print "!!! Error: You want to use --config, but no file was appended!"
+			sys.exit(1)
+		elif opts[opts.index("--config")+1][0:2] == "--" or len(opts) <= 1:
+			print "!!! Error: You want to use --config, but no file was appended!"
 			sys.exit(1)
 		config['config'] = opts[opts.index("--config")+1]
 	else:
