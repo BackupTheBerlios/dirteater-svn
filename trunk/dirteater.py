@@ -107,8 +107,25 @@ def main():
 			print __revision__
 		sys.exit()
 	
-	# This is only for Linux ATM
-	homedir = os.getenv("HOME")
+	# Get the users application data directory from environment variables and "~/"
+	# Try windows path first, as windows has a special application data directory
+	# The last fallback is to use the current working directory
+	homedir = os.getenv("APPDATA").replace("\\", "/")
+	if not os.path.exists(homedir):
+		homedir = os.path.expanduser("~")
+	if not os.path.exists(homedir):
+		homedir = os.getenv("HOME")
+	if not os.path.exists(homedir):
+		homedir = os.getcwd()
+		
+	# Get the systems global settings directory
+	# Try both /etc and the windows "all users" diretory
+	if os.path.isdir("/etc/"):
+		etcdir = "/etc"
+	elif os.getenv("ALLUSERSPROFILE") != "":
+		etcdir = os.getenv("ALLUSERSPROFILE").replace("\\", "/") + os.getenv("APPDATA")[len(os.getenv("USERPROFILE")):].replace("\\", "/")
+	else:
+		etcdir = ""
 
 	if "--config" in opts:
 		if opts[opts.index("--config")+1][0:2] == "--":
@@ -118,8 +135,8 @@ def main():
 	else:
 		if os.path.isfile(homedir+"/dirt.xml"):
 			config['config'] = homedir+"/dirt.xml"
-		elif os.path.isfile("/etc/dirt.xml"):
-			config['config'] = "/etc/dirt.xml"
+		elif os.path.isfile(etcdir+"/dirt.xml"):
+			config['config'] = etcdir+"/dirt.xml"
 		else: 
 			print "!!! Error: No configuration file found!"
 			sys.exit(1)
