@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 __revision__ = "$Id$"
-__headurl__ = "$HeadUR$"
+__headurl__ = "$HeadURL$"
 
 import os
 import sys
