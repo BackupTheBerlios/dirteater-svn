@@ -3,6 +3,8 @@ The TODO list is stored as an XML file to be compatible with DevTodo
 DevTodo or 
 http://butsugenjitemple.org/~ka0ttic/archives/2005-03-27T21_29_24.html.
 
-You can find the actual todo-list in ".todo"
+You can find todo-lists here: 
+- /trunk/.todo
+- /trunk/qa-tools/.todo
 
 $Id$
