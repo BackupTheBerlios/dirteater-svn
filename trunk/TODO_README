@@ -1,0 +1,8 @@
+The TODO list is stored as an XML file to be compatible with DevTodo 
+(http://swapoff.org/DevTodo). I recommend reading the homepage of
+DevTodo or 
+http://butsugenjitemple.org/~ka0ttic/archives/2005-03-27T21_29_24.html.
+
+You can find the actual todo-list in ".todo"
+
+$Id$
