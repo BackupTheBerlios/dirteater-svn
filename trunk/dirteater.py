@@ -29,6 +29,9 @@ import xml.dom.minidom
 
 from xml.dom.minidom import Node
 from xml.dom.minidom import Element
+from xml.parsers.xmlproc import xmlproc
+from xml.parsers.xmlproc import xmlval
+from xml.parsers.xmlproc import xmldtd
 
 def main():
 	# Some globals and variables
@@ -110,7 +113,7 @@ def main():
 	# Get the users application data directory from environment variables and "~/"
 	# Try windows path first, as windows has a special application data directory
 	# The last fallback is to use the current working directory
-	if type(os.getenv("APPDATA")) == "NoneType":
+	if os.getenv("APPDATA") is not None:
 		homedir = os.getenv("APPDATA").replace("\\", "/")
 	else:
 		homedir = os.path.expanduser("~")
@@ -142,10 +145,11 @@ def main():
 			print "!!! Error: No configuration file found!"
 			sys.exit(1)
 		
-	configuration = xml.dom.minidom.parse(config['config'])
-
 	# Validate XML
-	# TODO
+	p = xmlval.XMLValidator()
+	p.parse_resource(config['config'])
+
+	configuration = xml.dom.minidom.parse(config['config'])
 	
 	general_config = configuration.getElementsByTagName('general')
 	for node in general_config:
@@ -161,14 +165,17 @@ def main():
 					config[setname] = False
 				else:
 					config[setname] = set.data
-
+	
 	for set in opts:
 		if set in overwrite:
 			config[set[2:]] = True
 	
+	# Just give back the whole configuration and exit.
 	if "--configdump" in opts:
 		pprint.pprint(config)
 		sys.exit()
+
+	
 
 if __name__ == "__main__":
 	main()

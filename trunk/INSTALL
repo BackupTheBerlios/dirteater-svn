@@ -1,5 +1,6 @@
-At the moment dirteater has no dependencies except Python
-(http://www.python.org) itself. 
+Dependencies: 
+	- Python (http://www.python.org)
+	- PyXML (http://pyxml.sourceforge.net)
 
 More informations are coming soon.
 

@@ -1,0 +1,23 @@
+<!-- 
+	The Document Type Definition of dirteaters 
+	(http://dirteater.berlios.de) configuration.
+
+	For license information visit the LICENSE file in that
+	package.
+
+	$Id$
+-->
+<!ELEMENT dirtconf (general,plugin,filter)>
+
+<!ELEMENT general (verbose|debug|daemon)?>
+<!ELEMENT plugin (#PCDATA)>
+<!ELEMENT filter (#PCDATA)>
+
+<!ELEMENT verbose (#PCDATA)>
+<!ELEMENT debug (#PCDATA)>
+<!ELEMENT daemon (#PCDATA)>
+
+<!-- plugin -->
+<!ATTLIST plugin name CDATA #REQUIRED>
+<!ATTLIST plugin type (input|output) #REQUIRED>
+<!ATTLIST plugin enable (true|false) #IMPLIED>

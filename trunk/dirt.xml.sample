@@ -1,28 +1,32 @@
 <?xml version="1.0"?>
+<!DOCTYPE dirtconf SYSTEM "dirtconf.dtd">
 <!-- 
-	This is the example dirt.xml file. 
-	##################################
+	This is the example configuration of dirteater 
+	(http://dirteater.berlios.de)
+	
+	For license information visit the LICENSE file in that
+	package.
 
-	Some Informations:
-		- The "module" Tag's attribute 'enable' is by default true.
+	Note:
+		- The "plugin" Tag's attribute 'enable' is by default true.
 
 	$Id$
 -->
-<config>
+<dirtconf>
 	<general>
 		<debug>true</debug>
 		<verbose>true</verbose>
 		<daemon>true</daemon>
 	</general>
 
-	<module name="foo" type="input" enable="true">
+	<plugin name="foo" type="input" enable="true">
 		<!-- Module specific settings -->
-	</module>
-	<module name="bar" type="output" enable="true">
+	</plugin>
+	<plugin name="bar" type="output" enable="true">
 		<!-- Module specific settings -->
-	</module>
+	</plugin>
 	
 	<filter>
 		<!-- Here are some static filters -->
 	</filter>
-</config>
+</dirtconf>
