@@ -1,10 +1,18 @@
 A TODO list for the _NEARER_ future. This is no complete list. 
 Ordered by importance.
 
-- Add XML Validation against DTD
-- Make the configuration file location system independent
-- Make the "configuration progress" complete. (50% DONE)
-- More error handling
-- Implement plugin-mechanism
+dirteater:
+	- Add DTD
+	- Add XML Validation against DTD
+	- Make the configuration file location system independent
+	- Make the "configuration progress" complete. (50% DONE)
+	- More error handling
+	- Implement plugin-mechanism
+	- A little installer
+	- Some QA tools
+
+Homepage:
+	- Cool site :)
+	- Get a bugzilla running
 
 $Id$
