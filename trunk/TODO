@@ -1,7 +1,8 @@
-A TODO list for the _NEARER_ future. 
-This is no complete list. 
+A TODO list for the _NEARER_ future. This is no complete list. 
+Ordered by importance.
 
-- Make the "configuration-progress" complete.
+- Make the configuration file location much more complex.
+- Make the "configuration progress" complete.
 - Implement plugin-mechanism
 
 $Id$
