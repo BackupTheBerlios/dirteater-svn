@@ -1,8 +1,12 @@
 <?xml version="1.0"?>
 <!-- 
-	Some Informations
+	This is the example dirt.xml file. 
+	##################################
 
-	- The "module" Tag's attribute 'enable' is by default true.
+	Some Informations:
+		- The "module" Tag's attribute 'enable' is by default true.
+
+	$Id$
 -->
 <config>
 	<general>
@@ -10,12 +14,14 @@
 		<verbose>true</verbose>
 		<daemon>true</daemon>
 	</general>
+
 	<module name="foo" type="input" enable="true">
 		<!-- Module specific settings -->
 	</module>
 	<module name="bar" type="output" enable="true">
 		<!-- Module specific settings -->
 	</module>
+	
 	<filter>
 		<!-- Here are some static filters -->
 	</filter>
