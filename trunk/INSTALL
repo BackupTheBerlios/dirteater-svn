@@ -1,3 +1,8 @@
+This program should be able to run from everywhere at the moment. 
+Just try to run it where you have it at the moment. :)
+
+BUT(!) be warned. This problam isn't able to do much at the moment :(
+
 Dependencies: 
 	- Python (http://www.python.org)
 	- PyXML (http://pyxml.sourceforge.net)
