@@ -1,4 +1,5 @@
-#!/bin/env python
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,10 +26,13 @@ import string
 import threading
 import os.path
 import traceback
+import copy
+import logging
 import pprint
 import xml.dom.minidom
 
-from errHandle import *
+from dirtErrHandle import *
+from dirtLib import *
 
 from xml.dom.minidom import Node
 from xml.dom.minidom import Element
@@ -38,16 +42,17 @@ from xml.parsers.xmlproc.utils import ErrorPrinter
 def main():
 	# Some globals and variables
 	global config
-	global homedir
 	
 	config = {}
-
+	general_cfg = {}
+	
 	options = [
 		"--config",
 		"--configdump",
 		"--debug",
 		"--daemon",
 		"--help",
+		"--logtype",
 		"--module-help",
 		"--verbose",
 		"--version"
@@ -64,6 +69,7 @@ def main():
 	overwrite = [
 		"--daemon",
 		"--debug",
+		"--logtype",
 		"--verbose"
 	]
 	
@@ -107,6 +113,7 @@ def main():
 		print "--daemon \t\t Make dirteater daemonic"
 		print "--debug \t\t Degging output"
 		print "--help \t\t\t Display this help message"
+		print "--logtype \t\t Where do you want to log? See manual page for more information"
 		print "--module-help <module> \t Display help for a module and exit. Modules are named for example: 'output:hello'"
 		print "--verbose \t\t Make output verbose"
 		print "--version \t\t Print out version information and exit\n"
@@ -175,50 +182,65 @@ def main():
 		elif opts[opts.index("--config")+1][0:2] == "--" or len(opts) <= 1:
 			print "!!! Error: You want to use --config, but no file was appended!"
 			sys.exit(1)
-		config['config'] = opts[opts.index("--config")+1]
+		general_cfg['config'] = opts[opts.index("--config")+1]
 	else:
 		if os.path.isfile(homedir+"/.dirt.xml"):
-			config['config'] = homedir+"/.dirt.xml"
+			general_cfg['config'] = homedir+"/.dirt.xml"
 		elif os.path.isfile(etcdir+"/dirt.xml"):
-			config['config'] = etcdir+"/dirt.xml"
-		else: 
-			print "!!! Error: No configuration file found!"
-			sys.exit(1)
-		
+			general_cfg['config'] = etcdir+"/dirt.xml"
+	if os.path.isfile(general_cfg['config']) is False:
+		print "!!! Error: Configuration file not found!"
+		sys.exit(1)
+	
+	########
+	# INFO: THIS FEATURE IS DISABLED AT THE MOMENT TO MAKE IT EASIER TO CHANGE THE CONFIGURATION FILE SYNTAX
+	########
+	#
 	# Validate XML
-	try: 
-		parser = xmlval.XMLValidator()
-		parser.set_error_handler(dtdErrHandle(parser))
-		parser.parse_resource(config['config'])
-	except Exception, msg:
-		print msg
-		sys.exit()
+	#try: 
+	#	parser = xmlval.XMLValidator()
+	#	parser.set_error_handler(dtdErrHandle(parser))
+	#	parser.parse_resource(config['config'])
+	#except Exception, msg:
+	#	print msg
+	#	sys.exit()
 
-	configuration = xml.dom.minidom.parse(config['config'])
+	configuration = xml.dom.minidom.parse(general_cfg['config'])
+
+	subnode_cfg = {}
 	
-	general_config = configuration.getElementsByTagName('general')
-	for node in general_config:
-		for general in node.childNodes:
-			if general.nodeType == Node.ELEMENT_NODE:
-				setname = general.nodeName
-			for set in general.childNodes:
-				# TODO: We really have to find a nice way to check for bool's. 
-				# This is ugly. 
-				if string.lower(set.data) == "true":
-					config[setname] = True
-				elif string.lower(set.data) == "false":
-					config[setname] = False
-				else:
-					config[setname] = set.data
+	# Get the complete general configuration
+	generalconfig = configuration.getElementsByTagName('general')
+	for mainnode in generalconfig: 
+		for subnode in mainnode.childNodes:
+			if subnode.nodeType == Node.ELEMENT_NODE:
+				for lastnode in subnode.childNodes:
+					if lastnode.nodeType == Node.ELEMENT_NODE:
+						general_cfg[lastnode.parentNode.nodeName] = subnode_cfg
+						for content in lastnode.childNodes:
+							subnode_cfg[lastnode.nodeName] = xmlVarConvert(content.data)
+					elif lastnode.nodeType == Node.TEXT_NODE:
+						if len(string.strip(lastnode.data)) > 0:
+							general_cfg[lastnode.parentNode.nodeName] = xmlVarConvert(lastnode.data)
+				subnode_cfg = {}
 	
-	for set in opts:
-		if set in overwrite:
-			config[set[2:]] = True
+	# Merge the general configuration into the complete config
+	config['general'] = general_cfg
+
+	# Overwrite settings
+	# REIMPLEMENTATION NEEDED!
+	#for set in opts:
+	#	if set in overwrite:
+	#		config[set[2:]] = True
 	
 	# Just give back the whole configuration and exit.
 	if "--configdump" in opts:
+		print "This is your configuration:\n"
 		pprint.pprint(config)
 		sys.exit()
+
+	### FROM HERE ON COMPLETE MESSAGE HANDLING IS MADE 
+	
 
 if __name__ == "__main__":
 	main()

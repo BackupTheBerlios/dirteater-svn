@@ -14,8 +14,22 @@
 -->
 <dirtconf>
 	<general>
-		<debug>true</debug>
-		<verbose>true</verbose>
+		<!-- Possible types:
+			- stdout
+			- file
+			- rotating-file (log rotates if a specified size is reached. 
+				Use this together with the attribute 'size')
+			- windowslog
+			- mail (use it together with the attribute 'mail')
+			- syslog 
+		-->
+		<p>
+			<a>asdf</a>
+		</p>
+		<logging type="stdout">
+			<debug>true</debug>
+			<verbose>true</verbose>
+		</logging>
 		<daemon>true</daemon>
 	</general>
 

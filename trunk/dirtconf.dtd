@@ -9,15 +9,20 @@
 -->
 <!ELEMENT dirtconf (general,plugin,filter)>
 
-<!ELEMENT general (verbose|debug|daemon)?>
+<!ELEMENT general (logging|daemon)>
 <!ELEMENT plugin (#PCDATA)>
 <!ELEMENT filter (#PCDATA)>
 
+<!ELEMENT logging (verbose|debug)>
+
 <!ELEMENT verbose (#PCDATA)>
 <!ELEMENT debug (#PCDATA)>
+
 <!ELEMENT daemon (#PCDATA)>
 
-<!-- plugin -->
+
+<!ATTLIST logging type (stdout|file|mail) #REQUIRED>
+
 <!ATTLIST plugin name CDATA #REQUIRED>
 <!ATTLIST plugin type (input|output) #REQUIRED>
 <!ATTLIST plugin enable (true|false) #IMPLIED>
