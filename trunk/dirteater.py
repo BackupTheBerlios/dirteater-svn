@@ -24,14 +24,16 @@ import types
 import string
 import threading
 import os.path
+import traceback
 import pprint
 import xml.dom.minidom
 
+from errHandle import *
+
 from xml.dom.minidom import Node
 from xml.dom.minidom import Element
-from xml.parsers.xmlproc import xmlproc
-from xml.parsers.xmlproc import xmlval
-from xml.parsers.xmlproc import xmldtd
+from xml.parsers.xmlproc import xmlval, xmlproc
+from xml.parsers.xmlproc.utils import ErrorPrinter
 
 def main():
 	# Some globals and variables
@@ -137,8 +139,8 @@ def main():
 			sys.exit(1)
 		config['config'] = opts[opts.index("--config")+1]
 	else:
-		if os.path.isfile(homedir+"/dirt.xml"):
-			config['config'] = homedir+"/dirt.xml"
+		if os.path.isfile(homedir+"/.dirt.xml"):
+			config['config'] = homedir+"/.dirt.xml"
 		elif os.path.isfile(etcdir+"/dirt.xml"):
 			config['config'] = etcdir+"/dirt.xml"
 		else: 
@@ -146,8 +148,13 @@ def main():
 			sys.exit(1)
 		
 	# Validate XML
-	p = xmlval.XMLValidator()
-	p.parse_resource(config['config'])
+	try: 
+		parser = xmlval.XMLValidator()
+		parser.set_error_handler(dtdErrHandle(parser))
+		parser.parse_resource(config['config'])
+	except Exception, msg:
+		print msg
+		sys.exit()
 
 	configuration = xml.dom.minidom.parse(config['config'])
 	
