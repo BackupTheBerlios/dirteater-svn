@@ -110,7 +110,7 @@ def main():
 	# Get the users application data directory from environment variables and "~/"
 	# Try windows path first, as windows has a special application data directory
 	# The last fallback is to use the current working directory
-	if os.getenv("APPDATA") != "":
+	if type(os.getenv("APPDATA")) == "NoneType":
 		homedir = os.getenv("APPDATA").replace("\\", "/")
 	else:
 		homedir = os.path.expanduser("~")
