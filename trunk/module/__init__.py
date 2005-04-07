@@ -14,7 +14,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-__version__ = "$Id$"
+__version__ = "$Id: errHandle.py 14 2005-03-31 00:31:04Z chkorn $"
 
-def dtdErrHandle(err):
-	raise Exception, 'Your DTD is not valid!'
+__all__ = ["input", "output"]

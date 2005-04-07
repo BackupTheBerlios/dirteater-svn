@@ -16,5 +16,8 @@
 
 __version__ = "$Id$"
 
-def dtdErrHandle(err):
-	raise Exception, 'Your DTD is not valid!'
+__help__ = "A description what this module does, available options and so on."
+
+def doc():
+	# This is the temporary way to make a documentation
+	return "Example INPUT plugin"

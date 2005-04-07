@@ -15,8 +15,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-__revision__ = "$Id$"
-__headurl__ = "$HeadURL$"
+__version__ = "$Id$"
+headurl = "$HeadURL$"
 
 import os
 import sys
@@ -126,7 +126,7 @@ def main():
 			print "Stable release: "+headinfo[headinfo.index("tags")+1]
 		else:
 			print "This is a development version. Expect bugs!"
-			print __revision__
+			print __version__
 		sys.exit()
 	elif "--module-help" in opts:
 		if len(opts) < 2:
@@ -146,12 +146,10 @@ def main():
 					print "!!! Error: You have specified a wrong module type. You only can use 'input' or 'output'"
 					sys.exit(1)
 				else: 
-					print "Help for "+moduleinfo[0]+" module '"+moduleinfo[1]+"':"
-					# We should do an import like this: 
-					#import modules.moduleinfo[0].moduleinfo[1]
-					# 
-					# probably this works with the module "imp"
-					print "\n\t this feature is not implemented yet \t\n"
+					print "Help for "+moduleinfo[0]+" module '"+moduleinfo[1]+"':\n"
+					modulename = "module."+str(moduleinfo[0])+"."+str(moduleinfo[1])
+					exec "import "+modulename
+					print eval(modulename+".doc()")
 					sys.exit()
 	
 	# Get the users application data directory from environment variables and "~/"
