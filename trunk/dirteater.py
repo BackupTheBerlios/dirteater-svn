@@ -14,9 +14,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# $Id$
 
-__version__ = "$Id$"
-headurl = "$HeadURL$"
+__version__ = "$Rev$"
+headurl = "$HeadURL: svn+ssh://svn.berlios.de/svnroot/repos/dirteater/trunk/dirteater.py $"
 
 import os
 import sys
@@ -31,13 +33,13 @@ import logging
 import pprint
 import xml.dom.minidom
 
-from dirtErrHandle import *
-from dirtLib import *
-
 from xml.dom.minidom import Node
 from xml.dom.minidom import Element
 from xml.parsers.xmlproc import xmlval, xmlproc
 from xml.parsers.xmlproc.utils import ErrorPrinter
+
+from dirtErrHandle import *
+from dirtLib import *
 
 def main():
 	# Some globals and variables
@@ -54,6 +56,7 @@ def main():
 		"--help",
 		"--logtype",
 		"--module-help",
+		"--nodtd",
 		"--verbose",
 		"--version"
 	]
@@ -194,19 +197,19 @@ def main():
 		else: 
 			print "!!! Errror: No configuration file can be found!"
 			sys.exit()
-			
-	########
-	# INFO: THIS FEATURE IS DISABLED AT THE MOMENT TO MAKE IT EASIER TO CHANGE THE CONFIGURATION FILE SYNTAX
-	########
-	#
-	# Validate XML
-	#try: 
-	#	parser = xmlval.XMLValidator()
-	#	parser.set_error_handler(dtdErrHandle(parser))
-	#	parser.parse_resource(config['config'])
-	#except Exception, msg:
-	#	print msg
-	#	sys.exit()
+	
+	if "--nodtd" in opts: 
+		print "*** Warning: --nodtd is appended. Now no validation against a DTD is made! \
+		Only do this for debugging or testing of new features!"
+	else:
+		# Validate XML
+		try: 
+			parser = xmlval.XMLValidator()
+			parser.set_error_handler(dtdErrHandle(parser))
+			parser.parse_resource(config['config'])
+		except Exception, msg:
+			print msg
+			sys.exit()
 
 	configuration = xml.dom.minidom.parse(general_cfg['config'])
 
