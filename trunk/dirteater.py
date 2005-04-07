@@ -180,16 +180,21 @@ def main():
 		elif opts[opts.index("--config")+1][0:2] == "--" or len(opts) <= 1:
 			print "!!! Error: You want to use --config, but no file was appended!"
 			sys.exit(1)
-		general_cfg['config'] = opts[opts.index("--config")+1]
+
+		if os.path.isfile(opts[opts.index("--config")+1]) is False:
+			print "!!! Error: Configuration file not found!"
+			sys.exit()
+		else:
+			general_cfg['config'] = opts[opts.index("--config")+1]
 	else:
 		if os.path.isfile(homedir+"/.dirt.xml"):
 			general_cfg['config'] = homedir+"/.dirt.xml"
 		elif os.path.isfile(etcdir+"/dirt.xml"):
 			general_cfg['config'] = etcdir+"/dirt.xml"
-	if os.path.isfile(general_cfg['config']) is False:
-		print "!!! Error: Configuration file not found!"
-		sys.exit(1)
-	
+		else: 
+			print "!!! Errror: No configuration file can be found!"
+			sys.exit()
+			
 	########
 	# INFO: THIS FEATURE IS DISABLED AT THE MOMENT TO MAKE IT EASIER TO CHANGE THE CONFIGURATION FILE SYNTAX
 	########
