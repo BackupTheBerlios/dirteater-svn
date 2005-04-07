@@ -16,7 +16,33 @@
 
 __version__ = "$Id$"
 
-__help__ = "A description what this module does, available options and so on."
+"""
+	This is a sample module. 
+	You can do nearly everything what you want with them :)
+
+	At least you need the methods:
+		- __init__ 
+		- returnFiltered
+"""
+
+class imap:						# The classname MUST be the name of the module
+	def __init__(conf):
+		# here you should become your configuration
+		# do what you want with them :)
+		return 0
+
+	def getDirt():
+		# Get the dirt
+		return 0
+
+	def doScore():
+		# Make scoring
+		return 0
+
+	def returnFiltered
+		# Return the filtered messages 
+		return 0
+
 
 def doc():
 	# This is the temporary way to make a documentation
