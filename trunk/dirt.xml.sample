@@ -8,7 +8,7 @@
 	package.
 
 	Note:
-		- The "plugin" Tag's attribute 'enable' is by default true.
+		- The "plugin" Tag 'enable' is by default true.
 
 	$Id$
 -->
@@ -16,28 +16,29 @@
 	<general>
 		<!-- Possible types:
 			- stdout
-			- file
+			- file (use with tag "file")
 			- rotating-file (log rotates if a specified size is reached. 
-				Use this together with the attribute 'size')
+				Use this together with the tag 'file', 'size' and 'count' wich
+				specifies the maximum number of backups)
 			- windowslog
-			- mail (use it together with the attribute 'mail')
+			- mail (use it together with the tag 'mail')
 			- syslog 
 		-->
-		<p>
-			<a>asdf</a>
-		</p>
-		<logging type="stdout">
+		<logging>
+			<type>stdout</type>
+			<!-- More Examples
+			<file>dirteater.log</file>
+			<count>5</count>
+			<size>1024</size> 
+			-->
 			<debug>true</debug>
-			<verbose>true</verbose>
+			<verbose>false</verbose>
 		</logging>
-		<daemon>true</daemon>
+		<daemon>false</daemon>
 	</general>
 
-	<plugin name="foo" type="input" enable="true">
-		<!-- Module specific settings -->
-	</plugin>
-	<plugin name="bar" type="output" enable="true">
-		<!-- Module specific settings -->
+	<plugin name="fifo" type="input" enable="true">
+		<fifo>/home/chkorn/dirteaterfifo</fifo>
 	</plugin>
 	
 	<filter>

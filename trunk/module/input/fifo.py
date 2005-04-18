@@ -28,16 +28,36 @@ At least you need the methods / functions:
 """
 
 import threading
-import syslog
+import sys
+import string
+import logging
+import os
+import os.path
 
-class example(threading.Thread):
-	def __init__(self, config):
+class fifo(threading.Thread):
+	def __init__(self, config, logger):
 		self.config = config
+		self.logger = logger
+		
 		threading.Thread.__init__(self)
 	
 	def run(self):
-		syslog.syslog("Hello World!")
+		if os.name == "posix": 
+			if not os.path.exists(self.config['plugin'][self.__class__.__name__[:]]['fifo']):
+				self.logger.debug("Making FIFO ("+self.config['plugin'][self.__class__.__name__[:]]['fifo']+")")
+				os.mkfifo(self.config['plugin'][self.__class__.__name__[:]]['fifo'])
+			else: 
+				self.logger.debug("FIFO already exists ("+self.config['plugin'][self.__class__.__name__[:]]['fifo']+")")
+	
+			self.logger.debug("Waiting for input to FIFO")
+			f = open(self.config['plugin'][self.__class__.__name__[:]]['fifo'], "r")
+			for content in f.readlines():
+				print content
+		else: 
+			self.logger.error("This plugin is only for POSIX style operating systems. Disabling plugin")
+			return 0
+
 
 def doc():
 	# This is the temporary way to make a documentation
-	return "Example INPUT plugin"
+	return "This module make's a FIFO file where you can pipe your informations in."

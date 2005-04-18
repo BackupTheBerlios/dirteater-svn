@@ -77,6 +77,7 @@ def main():
 		"--verbose"
 	]
 
+	# this should be replaced by a configuration from the xml file.
 	logger = logging.getLogger("dirteater")
 	logformat = logging.Formatter("%(asctime)s %(levelname)s %(message)s", "%Y-%m-%d %H:%M:%S")
 	hdlr = logging.StreamHandler(sys.stdout)
@@ -240,18 +241,25 @@ def main():
 			if subnode.nodeType == Node.ELEMENT_NODE:
 				pluginname = mainnode.getAttribute("name")
 				plugintype = mainnode.getAttribute("type")
-				pluginenable = mainnode.getAttribute("enable")
+				pluginenable = xmlVarConvert(mainnode.getAttribute("enable"))
+
+				subnode_cfg['type'] = plugintype
+				subnode_cfg['enable'] = pluginenable
 
 				for lastnode in subnode.childNodes:
 					if len(string.strip(lastnode.data)) > 0:
-						subnode_cfg[subnode.nodeName] = lastnode.data
+						subnode_cfg[subnode.nodeName] = xmlVarConvert(lastnode.data)
 
 		plugin_cfg[pluginname] = subnode_cfg
 		subnode_cfg = {}
 
 	config['general'] = general_cfg
 	config['plugin'] = plugin_cfg
-
+	# workaround for the logging config
+	config['general']['logformat'] = logformat
+	
+	logger.info("Configuration progress now complete")
+	
 	# this is a crazy logging system. but is it secure?
 	log = {
 		"stdout":{"class":"StreamHandler","opts":""},
@@ -265,21 +273,41 @@ def main():
 	}
 
 	logger.removeHandler(hdlr)
-	exec "user_hdlr = logging." \
-		+log[config['general']['logging']['type']]['class'] \
-		+"("+log[config['general']['logging']['type']]["opts"]+")"
-	user_hdlr.setFormatter(logformat)
-	logger.addHandler(user_hdlr)
+	config['general']['logger'] = eval("logging." 
+		+log[config['general']['logging']['type']]['class'] 
+		+"("+log[config['general']['logging']['type']]["opts"]+")")
+	config['general']['logger'].setFormatter(config['general']['logformat'])
+	logger.addHandler(config['general']['logger'])
 
 	if config['general']['logging']['debug'] is True: 
 		logger.setLevel(logging.DEBUG)
 	elif config['general']['logging']['verbose'] is True:
 		logger.setLevel(logging.INFO)
 
+	logger.debug("Logging is now made how it should be done")
+
 	if "--configdump" in opts:
 		print "This is your configuration:\n"
 		pprint.pprint(config)
 		sys.exit()
+
+	threadList = []
+
+	for threadinfo in config['plugin']:
+		if config['plugin'][threadinfo]['enable'] is True: 
+			modulename = "module."+config['plugin'][threadinfo]['type']+"."+threadinfo
+			exec "import "+modulename
+			thread = eval(modulename+"."+threadinfo+"(config, logger)")
+			threadList.append(thread)
+
+	for thread in threadList:
+		inputHandler(thread)
+		#thread.setDaemon(True)
+		#thread.start()
+
+def inputHandler(thread):
+	print "FOOBAR!"
+	#return thread.start()
 
 if __name__ == "__main__":
 	main()

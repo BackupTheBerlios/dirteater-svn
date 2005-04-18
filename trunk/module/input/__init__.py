@@ -18,4 +18,4 @@
 
 __version__ = "$Rev$"
 
-__all__ = ["example"]
+__all__ = ["example","fifo"]

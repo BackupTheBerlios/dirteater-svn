@@ -1,0 +1,19 @@
+The TODO file is generated from a DevTodo XML file. This is NOT done
+automatically.
+
+
+If you want to be up to date I recommend using DevTodo or read the 
+.todo files in one of the below listed directories.
+
+You can find todo-lists here: 
+- /trunk/.todo
+- /trunk/qa-tools/.todo
+- /trunk/doc/.todo
+
+
+Also see for some good tips about DevTodo:
+- http://swapoff.org/DevTodo 
+- http://butsugenjitemple.org/~ka0ttic/archives/2005-03-27T21_29_24.html
+
+
+$Id$
