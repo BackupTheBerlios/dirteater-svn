@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE dirtconf SYSTEM "dirtconf.dtd">
+<dirteater>
+	<gsettings>
+		<log type="syslog"/>
+		<!-- <log type="file">alsdfjasflkj</log> -->
+		<!-- <log type="mail">fooh@blah.de</log> -->
+		<debug>true</debug>
+		<daemon>true</daemon>
+		<verbose>true</verbose>
+	</gsettings>
+	<channels>
+		<channel name="Example" type="HTTP">
+			<settings>
+				<autolearn>true</autolearn>
+				<learndir>/path/to/dir</learndir>
+				<filters>
+					<filter>/path/to/filter.xml</filter>
+					<filter>/path/to/filter2.xml</filter>
+				</filters>
+			</settings>
+			<input>
+				<url>http://www.example.com</url>
+				<url>http://www.example.net</url>
+			</input>
+			<output type="Jabber">
+				<to>carl@jabber.example.com</to>
+				<to>bob@jabber.example.com</to>
+				<from>Dirteater Daemon</from>
+				<subject>Dirteatermessages</subject>
+			</output>
+		</channel>
+	</channels>	
+</dirteater>
